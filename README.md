@@ -1,8 +1,10 @@
 # mc-ccXcodex-agentic-coding
 
-An agentic-coding skills pack for [Claude Code](https://docs.claude.com/en/docs/claude-code), built around one end-to-end workflow: **`/build`**. It executes a plan, spec, or list of items (features or bug fixes) one at a time, using **codex (GPT-5)** as the executor and a fleet of adversarial reviewers as the quality gate. Claude orchestrates and reviews; codex writes the code.
+An agentic-coding skills pack for [Claude Code](https://docs.claude.com/en/docs/claude-code), built around one end-to-end workflow: **`/build`**. It executes a plan, spec, or list of items (features or bug fixes) one at a time, using **codex** as the executor and adversarial codex reviewers as the quality gate. Claude orchestrates and reviews; codex writes the code.
 
-Everything here exists to make `/build` run. Drop the folders into your Claude Code setup and invoke `/build` on a spec.
+Everything here exists to make `/build` run. Drop the folders into your Claude Code setup and invoke `/build` on a spec. **macOS only, as shipped** (see Requirements).
+
+These skills are shared as-is from my personal setup; expect rough edges. Read through the skills before running them, and adapt anything machine-specific to your own setup.
 
 ## What's inside
 
@@ -10,14 +12,14 @@ Everything here exists to make `/build` run. Drop the folders into your Claude C
 
 | Skill | What it does |
 |-------|--------------|
-| [`build`](./build) | The end-to-end workflow. Works through items one at a time with a mandatory per-item loop (`/tdd` + `/co` to build, then `/loop /multi-review10x-lean` to review until a fleet pass logs **0 Critical / 0 High**), plus frontend, backend, e2e, and docker gates. Logs every review cycle to a live `.build-review-ledger.md`. |
+| [`build`](./build) | The end-to-end workflow. Works through items one at a time with a mandatory per-item loop: `/tdd` + `/co` to build, then a `/loop` of a review engine picked **per item** from the ladder (`/multi-review-lean` for small mechanical items, `/multi-review3x-lean` as the default, `/multi-review10x-lean` for high-stakes or cross-cutting items), until a pass logs **0 Critical / 0 High** or a hard 3-pass cap is hit. Adds frontend, backend, e2e, and docker gates and logs every review cycle to a live `.build-review-ledger.md`. |
 
 **Executors** (how work gets written)
 
 | Skill | What it does |
 |-------|--------------|
 | [`co`](./co) | Orchestrate a task by delegating execution to codex; Claude defines and reviews. Owns TDD enforcement in the brief. |
-| [`codex`](./commands/codex.md) | The command `/co` delegates to. Hardened `codex exec` invocation: auto-trust, watchdog heartbeat, oversized backstop timeout, verbatim change report. **Installs as a command, not a skill** (see Install). |
+| [`codex`](./commands/codex.md) | The command `/co` delegates to. Hardened `codex exec` invocation: auto-trust, watchdog heartbeat, oversized backstop timeout, verbatim change report. Silently picks the codex model and reasoning effort per task instead of inheriting the token-hungry global default. **Installs as a command, not a skill** (see Install). |
 | [`tdd`](./tdd) | Strict RED-GREEN-REFACTOR discipline. No production code before a failing test exists. |
 | [`spec`](./spec) | Write a short, high-level build spec into `specs/<name>.md`. This is the input `/build` consumes. |
 
@@ -25,7 +27,9 @@ Everything here exists to make `/build` run. Drop the folders into your Claude C
 
 | Skill | What it does |
 |-------|--------------|
-| [`multi-review10x-lean`](./multi-review10x-lean) | The per-item review engine. A fleet of 10+ external codex reviewers, each on a distinct dimension, then a second codex reproduction pass to keep only real flaws. Find, verify, fix. |
+| [`multi-review-lean`](./multi-review-lean) | The light rung of the review ladder. One external codex reviewer, no Claude subagents; keeps only verified-real flaws and fixes them. For small, well-scoped items. |
+| [`multi-review3x-lean`](./multi-review3x-lean) | The default rung. A fixed trio of external codex reviewers, each on a merged dimension cluster, then a codex reproduction pass to keep only real flaws. |
+| [`multi-review10x-lean`](./multi-review10x-lean) | The heavy rung. A fleet of 10+ external codex reviewers, each on a distinct dimension, then a second codex reproduction pass. For high-stakes or cross-cutting items. |
 | [`frontend-review-loop`](./frontend-review-loop) | Verify a frontend change by actually using it in a real browser, then loop fix → re-review until no Critical/High remain. |
 | [`backend-review-loop`](./backend-review-loop) | Boot the service, hit the touched entrypoint with real requests, verify real side effects (DB/queue/cache/logs), then loop fix → re-review. |
 | [`docker-test`](./docker-test) | Pre-deploy smoke test: exercises the real worker/queue path and simulates the full Docker build/run topology to catch deploy-only failures. |
@@ -43,7 +47,8 @@ Everything here exists to make `/build` run. Drop the folders into your Claude C
 /build  (per item, one at a time)
   ├─ build  →  /tdd  +  /co  →  /codex        (write, test-first)
   │             └─ if frontend: /impeccable → /frontend-review-loop → /dev-browser
-  ├─ review →  /loop /multi-review10x-lean  → /codex fleet   (until 0 Crit / 0 High)
+  ├─ review →  /loop <engine>  → codex reviewers   (until 0 Crit / 0 High, or 3-pass cap)
+  │             └─ engine picked per item: /multi-review-lean | /multi-review3x-lean | /multi-review10x-lean
   └─ after all items:
         /backend-review-loop      (backend gate)
         /co  e2e test             (e2e gate)
@@ -62,8 +67,8 @@ git clone https://github.com/manuelcx/mc-ccXcodex-agentic-coding.git
 cd mc-ccXcodex-agentic-coding
 
 # Skills → ~/.claude/skills/
-cp -R build tdd co spec multi-review10x-lean frontend-review-loop \
-      backend-review-loop docker-test dev-browser fusion ~/.claude/skills/
+cp -R build tdd co spec multi-review-lean multi-review3x-lean multi-review10x-lean \
+      frontend-review-loop backend-review-loop docker-test dev-browser fusion ~/.claude/skills/
 
 # The codex command → ~/.claude/commands/
 cp commands/codex.md ~/.claude/commands/
@@ -77,9 +82,11 @@ Then write a spec with `/spec` (or bring your own plan/list) and run `/build` on
 
 **`impeccable`** (external — not mine to ship). Anthropic's frontend-design plugin. `/build` calls `/impeccable` before building any frontend item and `/loop /impeccable critique` to iterate on the design; `/co` references it to force a Claude subagent (never codex) as the frontend executor. Get it from the impeccable plugin. Without it, backend-only builds still work; frontend items will not.
 
-**`/loop`** — built into Claude Code. `/build` wraps `/loop /multi-review10x-lean` and `/loop /impeccable critique`. Nothing to install; it ships with the CLI.
+**`/loop`** — built into Claude Code. `/build` wraps `/loop` around the per-item review engine and `/loop /impeccable critique`. Nothing to install; it ships with the CLI.
 
-**codex CLI (GPT-5)** — required. The `codex` command shells out to `codex exec`. Install and authenticate the codex CLI, and note the directory-trust behavior documented inside `commands/codex.md` (an untrusted dir hangs the run).
+**codex CLI** — required. The `codex` command shells out to `codex exec`. Install and authenticate the codex CLI, and note the directory-trust behavior documented inside `commands/codex.md` (an untrusted dir hangs the run).
+
+**Check the model slugs before your first run.** The model rubric in `commands/codex.md` (and the fleet-composition step in the review skills) names specific slugs: `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`. Your codex account may expose a different lineup — compare against your `~/.codex/models_cache.json` and adjust the model tables in the skills to whatever your account offers.
 
 **Playwright MCP** and/or the **`dev-browser` CLI** — required for frontend verification. `frontend-review-loop` and `dev-browser` drive a real browser to exercise the UI.
 
@@ -90,6 +97,8 @@ If you only build backends, you need: codex CLI + the skills above (skip impecca
 ## Requirements
 
 [Claude Code](https://docs.claude.com/en/docs/claude-code) installed, plus the codex CLI for any real build. Frontend and docker gates need the extra tooling listed under Dependencies.
+
+**macOS only, as shipped.** The harness scripts are written for macOS: the watchdogs use BSD `stat -f %m` (GNU `stat` on Linux rejects that flag, so a hung codex run would never be detected as stale), the backstop timers work around macOS's missing `timeout` with a perl alarm, and `docker-test` assumes colima as the local Docker runtime. On Linux, port those bits first (GNU `stat -c %Y`, native `timeout`, your own Docker runtime).
 
 ## License
 

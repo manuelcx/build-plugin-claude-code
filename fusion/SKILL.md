@@ -16,7 +16,7 @@ Genuine model diversity is the whole point; identical models would just echo eac
 - **GPT-5 -> `/codex`**: invoke it as the actual slash command (via the Skill tool), passing this answer-brief as the argument:
   > *"Answer this fully: \<PROMPT\>. This is an analysis/answer task, NOT a coding task: do NOT edit any files. Output only your complete answer. Be thorough; state key assumptions and flag any uncertainty."*
 
-  You MUST use the command, never hand-roll `codex exec` (the raw CLI hangs; the command carries the only working anti-hang recipe and backgrounds itself). codex answers from model knowledge (its command disables network); the guaranteed live-web layer is the Claude panelists and the judge below.
+  You MUST use the command, never hand-roll `codex exec` (the raw CLI hangs; the command carries the only working anti-hang recipe and backgrounds itself). codex answers primarily from model knowledge (its brief forbids network unless the task explicitly requires it); the guaranteed live-web layer is the Claude panelists and the judge below. `/codex` picks its own model and effort from the brief's complexity signals: state the question's GENUINE difficulty and stakes, honestly. Typical fusion targets are genuinely hard, which lands on a strong pick on its own; never inflate a trivial prompt to force an expensive model.
 
 - **Claude -> 3 lens panelists**, fired as parallel `Agent()` calls, each given the identical prompt under a distinct lens so they don't converge:
   1. **Direct** — the strongest straightforward, complete answer.
