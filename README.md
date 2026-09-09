@@ -32,6 +32,28 @@ An engine value is `agy`, `codex:<model>:<effort>`, or `claude:<model>[:<effort>
 
 Full rules: [`reference/roles.md`](./reference/roles.md).
 
+### Changing the models
+
+The defaults in the table above are only defaults. Nothing in the plugin is hardwired to a particular vendor or model, and you can change what runs in two ways.
+
+**Per run, on the invocation line.** Name any role and it uses your engine for that build instead of its default. Roles you leave out keep theirs. This is the normal way to work, and it is why the run is reproducible: the resolved model for every role is recorded in the ledger at the start.
+
+```
+/build:build specs/dm-inbox.md reviewer=codex:gpt-5.6-sol:high
+/build:build specs/dm-inbox.md executor=claude:opus frontend=claude:opus
+/build:build specs/dm-inbox.md executor=agy frontend=agy reviewer=agy consult=agy
+```
+
+**Permanently, by editing your copy.** The defaults live in one table at the top of [`reference/roles.md`](./reference/roles.md). Change that table and every future build picks up the new defaults.
+
+What a valid engine value looks like:
+
+- **`agy`** takes no model and no effort. It always resolves to whatever sits at the top of `agy models` when the build starts, which is the newest Gemini at its highest reasoning level. Passing it an effort flag fails the run.
+- **`codex:<model>:<effort>`** needs both parts spelled out. Model slugs come from your own `~/.codex/models_cache.json`; efforts are `low`, `medium`, `high`, `xhigh` and `max`. Do not use `ultra`, which delegates internally and so is not a pinned role.
+- **`claude:<model>[:<effort>]`** takes `fable`, `opus`, `sonnet` or `haiku`, where `fable` and `opus` mean the latest of each line. The model is set per run, but the effort is not: Claude roles run at whatever their agent file under [`agents/`](./agents) declares, all of them `high` as shipped, because the harness has no per-call effort override. A third part here is recorded in the ledger for the reader and has to match that file. Raising or lowering a Claude role's effort means editing its agent file.
+
+Your choice is final, whatever it is. Putting all four roles on one model family, or the consult on the same model as the executor, is allowed; pre-flight records what you asked for and proceeds. The mixed defaults exist because a consult from a different model family gives a genuinely independent second opinion, but that is a recommendation, not a rule the orchestrator enforces. Pre-flight fails only when an engine does not answer, never because of how you combined them.
+
 ## What ships
 
 **Skills**
