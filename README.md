@@ -9,8 +9,8 @@ Shared as-is from my personal setup; expect rough edges. Read the skills before 
 ## Install
 
 ```
-/plugin marketplace add manuelcx/mc-ccXcodex-agentic-coding
-/plugin install build@mc-ccXcodex-agentic-coding
+/plugin marketplace add manuelcx/build-plugin-claude-code
+/plugin install build@build-plugin-claude-code
 ```
 
 ## The four roles
