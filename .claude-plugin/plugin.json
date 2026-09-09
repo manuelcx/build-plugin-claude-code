@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "build",
+  "displayName": "Build",
+  "version": "2.1.4",
+  "description": "The /build:build unattended build workflow: locked roles (executor, frontend, reviewer, consult), one review skill scored on impact and likelihood, the codex and agy delegation commands, the frontend, backend and docker gates, plus the launch scripts, the ledger tool, and the shared contracts they all read.",
+  "author": { "name": "Manuel Colonna" }
+}

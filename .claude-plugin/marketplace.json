@@ -1,0 +1,12 @@
+{
+  "name": "mc-ccXcodex-agentic-coding",
+  "owner": { "name": "Manuel Colonna" },
+  "description": "The build plugin: an unattended, role-locked agentic build workflow for Claude Code.",
+  "plugins": [
+    {
+      "name": "build",
+      "source": "./",
+      "description": "Unattended /build:build workflow plus its delegation commands, review skill, gates, launch scripts and shared contracts."
+    }
+  ]
+}
