@@ -54,7 +54,13 @@ What a valid engine value looks like:
 
 Your choice is final, whatever it is. Putting all four roles on one model family, or the consult on the same model as the executor, is allowed; pre-flight records what you asked for and proceeds. The mixed defaults exist because a consult from a different model family gives a genuinely independent second opinion, but that is a recommendation, not a rule the orchestrator enforces. Pre-flight fails only when an engine does not answer, never because of how you combined them.
 
-## What ships
+### The orchestrator, the fifth model
+
+The four roles above are the models the plugin delegates to. There is a fifth model in every build that the invocation line cannot set: the Claude Code session you type `/build:build` into. That session is the orchestrator. It never writes project code, but it does everything around it: cutting the spec into items, writing each brief, holding the contracts, verifying every reported finding against the real code, deciding when an item is done, and keeping the ledger honest across a long unattended run.
+
+**Run the orchestrator on an Opus model at medium reasoning effort.** Pick it with `/model` before you invoke the build.
+
+Opus rather than a smaller model because the orchestrator is the only participant holding the whole run in its head, and every judgement call that is not delegated is made there. Medium rather than high because orchestration is mostly reading, routing and bookkeeping against contracts that are already written down, not open-ended reasoning: high effort spends tokens and time on a job that is largely mechanical, and a build is long enough that the difference compounds. The deep thinking is supposed to happen in the delegated roles, which carry their own effort settings.
 
 **Skills**
 
