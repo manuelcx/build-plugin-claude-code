@@ -1,6 +1,6 @@
 # build
 
-A [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin for unattended, end-to-end builds. You hand `/build:build` a spec; it cuts the spec into items and drives each one through the same loop: build, review, fix, gate. It never asks you a question mid-run.
+A [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin for unattended, end-to-end builds. You write a spec with `/build:spec`, harden it with `/build:spec-certify`, then hand it to `/build:build`, which cuts it into items and drives each one through the same loop: build, review, fix, gate. It never asks you a question mid-run.
 
 The point of the plugin is that Claude does not write the project code. Four roles are locked at invocation, each one an engine plus a model plus an effort level, and Claude orchestrates between them. Nothing is silently substituted: if a locked engine dies, the run stops and reports instead of quietly falling back to something else.
 
@@ -38,6 +38,8 @@ Full rules: [`reference/roles.md`](./reference/roles.md).
 
 | Skill | What it does |
 |---|---|
+| [`/build:spec`](./skills/spec/SKILL.md) | Writes the short, high-level spec that `/build:build` consumes, into `specs/<name>.md`. Defines what to build and the non-obvious constraints, verified against the real code, and leaves the how to the implementer. |
+| [`/build:spec-certify`](./skills/spec-certify/SKILL.md) | Hardens an already-written spec before anyone builds from it. Loops adversarial review over the spec file, two external reviewers per cycle, until no verified Critical or High finding is left. Edits the spec only, never implementation code. |
 | [`/build:build`](./skills/build/SKILL.md) | The orchestrator. Locks the four roles, cuts the spec into items, and runs each through the golden standard: a TDD-mandated build under a scope contract, a pre-review scope gate, review cycles scored on impact and likelihood, fix rounds, a redesign consult when fixing stops working, then the structure, frontend, backend, e2e, docker and whole-build gates. No cycle cap, no questions, one ledger. |
 | [`/build:review`](./skills/review/SKILL.md) | The single adversarial review. One external reviewer reads the target under the shared reviewer contract, then Claude verifies every finding against the real code and scores it. Report-only inside a build; standalone it also routes the blocking fixes to the executor. |
 | [`/build:frontend-review-loop`](./skills/frontend-review-loop/SKILL.md) | Verifies a frontend change by using it like a human in a real browser through Playwright, then loops fix and re-check until nothing blocking remains. |
