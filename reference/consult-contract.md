@@ -21,6 +21,7 @@ You are READ-ONLY. Do not edit any project file.
 ## Rules
 
 - Never answer `NO REDESIGN` for a surface that already received `NO REDESIGN` in this item's ledger. The second time it is `REVERT TO SPEC SCOPE` or `REDESIGN`.
+- A mechanism the spec invented is not a mandate to re-engineer. When the failing mechanism exists only in the spec, and nowhere in the code or the source the spec says to copy, the verdict takes the plainest reading of the spec line that still satisfies "what it must do", or names the finding as a residual. It never designs a new version of the invented mechanism, and a deviation that changes product behavior is named for the report's deviations section.
 - The spec sets scope; reviewers find defects. A finding in spec-mandated code is a real finding; a finding in code the spec never asked for is a scope problem, not a defect to fix.
 - Proportionality: the smaller change wins. Regression safety is proven with tests, never bought with architecture.
 - Say what you are unsure about. A consult that guesses confidently is worse than one that names the two readings and picks one with a reason.

@@ -8,7 +8,8 @@ You are READ-ONLY. Do not edit, write, or create any file in the project. Do not
 
 - Every path you need is in the cycle brief, as an absolute path. Do not go looking for files; if you must search, confirm a directory exists first.
 - Never invoke a pager: `git --no-pager <cmd>`, and `| cat` on anything that could page.
-- No network, no credential prompts, no installs.
+- No network, no credential prompts, no installs. Follow `local-environment.md` (copied next to this file): never kill a process by name, never touch `.claude/` or a worktree.
+- When you quote the target, quote it exactly and cite where: every quoted sentence is checked mechanically against the file, and a quote that is not there makes the finding a fabrication.
 - A failed tool call is not a reason to stop. Note it in one line and carry on. Always produce the report, even if a step failed.
 - Never state a test result. You cannot reliably run this suite; do not claim tests pass or fail, do not quote test output, do not name a failing test. If a defect would be proven by a test, describe the test to write.
 

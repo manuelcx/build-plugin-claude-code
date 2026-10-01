@@ -6,7 +6,7 @@ argument-hint: "[entrypoints] [executor=agy|codex:m:e|claude:m]"
 
 # Backend Review Loop
 
-The shared loop shape, scoring, and stop policy are in `reference/gate-frame.md`; read it first. This file is the checklist.
+The shared loop shape, scoring, and stop policy are in `reference/gate-frame.md`; the machine rules (redirected outbound delivery, gate scripts, kills by pid) are in `reference/local-environment.md`; read both first. This file is the checklist.
 
 <HARD-GATE>
 Run the service and exercise the touched entrypoint with real requests, then verify the real side effects (rows, messages, cache entries, files, logs). Reading the handler does not count. A passing suite does not count on its own. Provision whatever tooling you need yourself; a credential only the user holds makes the gate `not runnable`, never a question.
@@ -18,7 +18,7 @@ The entrypoints the item touched and the state they read and write. Not the whol
 
 ## Each cycle
 
-1. **Boot** the service and its real dependencies (database, cache, broker), run migrations, load config, seed data. Infer commands from the package manifest, Makefile, compose file, README. Confirm health before touching anything.
+1. **Boot** the service and its real dependencies (database, cache, broker), run migrations, load config, seed data. Infer commands from the package manifest, Makefile, compose file, README. Redirect outbound delivery variables to the local sink and record every server's pid in `.build/gates/`. Confirm health before touching anything. Scripts that write or delete data are written by the executor in one launch per gate pass, check the database name before any destructive step, and run under a timeout; read-only probes are your own scratch under `.build/gates/`.
 2. **Exercise like a real client:** happy path with valid input (status, body shape and values, headers); bad input (missing, wrong type, malformed, oversized, empty) must return a clean 4xx with a useful error, never a 500; boundaries (nulls, empty, unicode, max lengths, pagination limits).
 3. **Verify side effects, not just the response:** after every write, look. The row created, updated, or deleted with the right values; the event actually published; the cache invalidated; the file, email, or webhook actually written or enqueued. A 2xx whose state never landed is impact 3.
 4. **Logs, the whole time:** stack traces, unhandled exceptions, error-level logs, slow-query warnings, each tied to the request that caused it.
@@ -28,7 +28,7 @@ The entrypoints the item touched and the state they read and write. Not the whol
 8. **Performance:** latency on a realistic payload; N+1 queries; pool exhaustion, timeouts, runaway memory.
 9. **Resilience:** kill a downstream dependency; it degrades with a timeout or clean error, never hangs or crashes.
 10. **Score** every issue: impact (3 crash, corruption, a write that does not persist, auth bypass, data leak, a migration that destroys or locks data; 2 wrong error code, missing validation lets bad data in, a side effect silently skipped, an N+1 that makes it unusable; 1 inconsistent error format, missing pagination, slow but works) times likelihood (3 ordinary traffic; 2 unusual but real; 1 contrived). Blocking at 6 or more.
-11. **Route** blocking issues to the executor as a fix brief pointing at `reference/executor-contract.md`; never edit on the main thread. Then re-run from step 1 against the touched surface.
+11. **Route** blocking issues to the executor as a fix brief pointing at `reference/executor-contract.md` and `reference/local-environment.md`; never edit on the main thread. Stop the servers by their recorded pids before the fix launches, then re-run from step 1 against the touched surface.
 
 ## Exit
 

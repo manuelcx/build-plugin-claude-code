@@ -28,7 +28,7 @@ cd "$DIR" || exit 5
 SNAP=".build/snap/$TAG"
 
 # manifest lines are "<64-char sha>  <path>"; the path starts at column 67 and may contain spaces
-manifest() { git ls-files -co --exclude-standard -z | grep -zv '^\.build/' | xargs -0 shasum -a 256 2>/dev/null | LC_ALL=C sort -k2; }
+manifest() { git ls-files -co --exclude-standard -z | grep -zvE '^\.build(-archive)?/' | xargs -0 shasum -a 256 2>/dev/null | LC_ALL=C sort -k2; }
 sha_of() { local f="$1"; [ -f "$f" ] && shasum -a 256 "$f" | cut -c1-64; }
 snap_sha() { awk -v p="$1" 'substr($0,67)==p {print substr($0,1,64); exit}' "$SNAP/manifest"; }
 # Byte copies are stored with a `.bytes` suffix so no test runner, linter, or type checker ever
@@ -47,7 +47,7 @@ case "$CMD" in
     git rev-parse HEAD > "$SNAP/commit" 2>/dev/null || echo "none" > "$SNAP/commit"
     manifest > "$SNAP/manifest"
     git --no-pager diff HEAD > "$SNAP/dirty.patch" 2>/dev/null || true
-    { git diff --name-only HEAD 2>/dev/null; git ls-files --others --exclude-standard; } | grep -v '^\.build/' | LC_ALL=C sort -u | while IFS= read -r f; do
+    { git diff --name-only HEAD 2>/dev/null; git ls-files --others --exclude-standard; } | grep -vE '^\.build(-archive)?/' | LC_ALL=C sort -u | while IFS= read -r f; do
       [ -f "$f" ] || continue
       mkdir -p "$SNAP/files/$(dirname "$f")"; cp "$f" "$SNAP/files/$f.bytes"
     done

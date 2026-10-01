@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Doc Template</title>
+<style>
+:root{
+  --bg:#fbfaf8;
+  --panel:#ffffff;
+  --panel2:#f4f1eb;
+  --ink:#202126;
+  --muted:#60646f;
+  --faint:#898d98;
+  --line:#e2ded6;
+  --line2:#eee9df;
+  --blue:#265c9f;
+  --blue-soft:#eaf1fb;
+  --green:#25715a;
+  --green-soft:#e8f5ef;
+  --amber:#a96d1f;
+  --amber-soft:#fbf1df;
+  --red:#b6483f;
+  --red-soft:#fae9e7;
+  --violet:#6353b8;
+  --violet-soft:#eeeafb;
+  --toc-bg:rgba(251,250,248,.92);
+  --lead-ink:#353842;
+  --cell-ink:#373a43;
+  --tag-blue-b:#bfd4ef;--tag-green-b:#b9ddcf;--tag-amber-b:#e5c897;--tag-red-b:#e6b9b4;--tag-violet-b:#cbc4ed;
+  --win-bar:#ebe7df;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;
+  --serif:Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16171a;--panel:#1e2024;--panel2:#272930;--ink:#ececef;--muted:#a9adb8;--faint:#979ba6;--line:#34373e;--line2:#2a2c32;
+    --blue:#86b4ee;--blue-soft:#1c2a3c;--green:#6cc5a3;--green-soft:#17302a;--amber:#e3a95c;--amber-soft:#33291a;
+    --red:#ee8c82;--red-soft:#3b201e;--violet:#ab9ff2;--violet-soft:#26223f;
+    --toc-bg:rgba(22,23,26,.92);--lead-ink:#d7d9df;--cell-ink:#cfd2d9;
+    --tag-blue-b:#2f4a6d;--tag-green-b:#2a5446;--tag-amber-b:#5e4524;--tag-red-b:#62332f;--tag-violet-b:#433a70;
+    --win-bar:#2c2f36;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16171a;--panel:#1e2024;--panel2:#272930;--ink:#ececef;--muted:#a9adb8;--faint:#979ba6;--line:#34373e;--line2:#2a2c32;
+  --blue:#86b4ee;--blue-soft:#1c2a3c;--green:#6cc5a3;--green-soft:#17302a;--amber:#e3a95c;--amber-soft:#33291a;
+  --red:#ee8c82;--red-soft:#3b201e;--violet:#ab9ff2;--violet-soft:#26223f;
+  --toc-bg:rgba(22,23,26,.92);--lead-ink:#d7d9df;--cell-ink:#cfd2d9;
+  --tag-blue-b:#2f4a6d;--tag-green-b:#2a5446;--tag-amber-b:#5e4524;--tag-red-b:#62332f;--tag-violet-b:#433a70;
+  --win-bar:#2c2f36;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+code,.mono{font-family:var(--mono)}
+code{font-size:.92em;background:var(--panel2);padding:.12rem .34rem;border-radius:4px}
+.shell{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:250px minmax(0,1fr)}
+.toc{position:sticky;top:0;height:100vh;overflow:auto;border-right:1px solid var(--line);padding:28px 18px;background:var(--toc-bg)}
+.toc .brand{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:18px}
+.toc nav{display:flex;flex-direction:column;gap:2px}
+.toc a{display:block;padding:6px 8px;border-radius:7px;color:var(--muted);font-size:13px}
+.toc a:hover{background:var(--panel2);color:var(--ink);text-decoration:none}
+.toc .group{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:18px 8px 6px}
+.toc .tnum{font-family:var(--mono);font-size:10px;color:var(--faint);display:inline-block;min-width:18px;margin-right:2px}
+main{padding:40px clamp(22px,4vw,58px) 80px;min-width:0}
+header{border-bottom:1px solid var(--line);padding-bottom:28px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);font-weight:700}
+h1{font-family:var(--serif);font-size:clamp(32px,5vw,52px);line-height:1.04;margin:12px 0 14px;font-weight:700;letter-spacing:-.02em}
+.lead{font-size:18px;color:var(--lead-ink);max-width:900px;margin:0}
+.meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px;max-width:980px}
+.meta .tile{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:13px 14px}
+.tile .k{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:5px}
+.tile .v{font-weight:650;color:var(--ink)}
+.section{padding-top:48px;scroll-margin-top:18px}
+.section-head{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:18px}
+.section-head .num{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--blue)}
+h2{font-family:var(--serif);font-size:28px;line-height:1.12;margin:0}
+h3{font-family:var(--serif);font-size:22px;margin:0 0 12px}
+h4{font-size:15px;margin:0 0 8px}
+.sublead{color:var(--muted);max-width:900px;margin:-4px 0 22px}
+.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:26px 0 0;max-width:1020px}
+.level{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:16px}
+.level .tag{margin-bottom:10px}
+.level p{margin:0;color:var(--muted);font-size:13.5px}
+.tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;border:1px solid;border-radius:999px;padding:3px 8px}
+.tag.blue{color:var(--blue);background:var(--blue-soft);border-color:var(--tag-blue-b)}
+.tag.green{color:var(--green);background:var(--green-soft);border-color:var(--tag-green-b)}
+.tag.amber{color:var(--amber);background:var(--amber-soft);border-color:var(--tag-amber-b)}
+.tag.red{color:var(--red);background:var(--red-soft);border-color:var(--tag-red-b)}
+.tag.violet{color:var(--violet);background:var(--violet-soft);border-color:var(--tag-violet-b)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;padding:4px 0 14px}
+.step-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;min-height:124px;position:relative}
+.step-card .n{font-family:var(--mono);font-size:10px;color:var(--faint);font-weight:700}
+.step-card .name{font-family:var(--serif);font-size:18px;font-weight:700;margin:4px 0 7px}
+.step-card .desc{font-size:12.7px;color:var(--muted);margin:0}
+.badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.badge{font-family:var(--mono);font-size:10px;font-weight:700;border-radius:5px;padding:2px 6px;background:var(--panel2);color:var(--muted)}
+.badge.llm{background:var(--violet-soft);color:var(--violet)}
+.badge.code{background:var(--green-soft);color:var(--green)}
+.badge.maybe{background:var(--amber-soft);color:var(--amber)}
+.callout{border:1px solid var(--line);border-left:4px solid var(--blue);background:var(--panel);border-radius:10px;padding:15px 18px;margin:20px 0}
+.callout.amber{border-left-color:var(--amber)}
+.callout.green{border-left-color:var(--green)}
+.callout.red{border-left-color:var(--red)}
+.callout p{margin:0;color:var(--muted)}
+.callout b{color:var(--ink)}
+.simple-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel)}
+.simple-table th{background:var(--panel2);font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px}
+.simple-table td{border-top:1px solid var(--line2);padding:11px 12px;vertical-align:top;color:var(--cell-ink);font-size:13.5px}
+.simple-table td:first-child{font-weight:650;color:var(--ink)}
+.simple-table ul{margin:0;padding-left:18px}
+.simple-table li{margin:0 0 3px}
+.mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.principles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.principle{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:13px}
+.principle b{display:block;margin-bottom:4px}
+.principle p{font-size:13px;color:var(--muted);margin:0}
+.swim{display:grid;gap:16px}
+.swim-row{display:grid;grid-template-columns:190px minmax(0,1.1fr) minmax(0,1fr) minmax(0,.9fr);gap:0;border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden}
+.swim-row>div{padding:13px 15px;border-left:1px solid var(--line2)}
+.swim-row>div:first-child{border-left:0;background:var(--panel2)}
+.swim-row .step-title{font-family:var(--serif);font-size:21px;font-weight:700}
+.swim-row .small{font-size:12.5px;color:var(--muted);margin-top:5px}
+.swim-row .label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:8px}
+.file-list,.table-list{display:flex;flex-wrap:wrap;gap:6px}
+.file-list a,.table-list span{font-family:var(--mono);font-size:11px;border-radius:5px;padding:3px 6px}
+.file-list a{background:var(--blue-soft);color:var(--blue)}
+.table-list span{background:var(--green-soft);color:var(--green)}
+.gotcha{font-size:12.7px;color:var(--muted);margin-top:10px;padding-top:9px;border-top:1px solid var(--line2)}
+.db-map{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:18px;overflow-x:auto}
+.db-spine{display:flex;align-items:stretch;gap:10px;min-width:820px}
+.db-box{border:1px solid var(--line);border-radius:10px;padding:12px;min-width:150px;background:var(--panel)}
+.db-box.core{border-color:var(--tag-blue-b);background:var(--blue-soft)}
+.db-box.evidence{border-color:var(--tag-green-b);background:var(--green-soft)}
+.db-box.ops{border-color:var(--tag-amber-b);background:var(--amber-soft)}
+.db-box .t{font-family:var(--mono);font-size:12px;font-weight:800;color:var(--ink)}
+.db-box .d{font-size:12px;color:var(--muted);margin-top:5px}
+.arrow{display:flex;align-items:center;color:var(--faint);font-family:var(--mono);font-weight:800}
+.surround{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+.sample{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.sample-card{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:13px}
+.sample-card .table-name{font-family:var(--mono);font-weight:800;font-size:12px;color:var(--blue);margin-bottom:8px}
+.kv{display:grid;grid-template-columns:132px 1fr;gap:6px 10px;font-size:12.5px}
+.kv .key{font-family:var(--mono);color:var(--faint)}
+.kv .val{color:var(--cell-ink);min-width:0;overflow-wrap:anywhere}
+.status-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.status-box{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px}
+.status-box .title{font-family:var(--mono);font-size:12px;font-weight:800;margin-bottom:8px}
+.status-box p{margin:0;color:var(--muted);font-size:13px}
+.checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.check{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:13px}
+.check b{display:block;margin-bottom:5px}
+.check p{margin:0;color:var(--muted);font-size:13px}
+.figure{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:18px;margin:6px 0 18px;overflow-x:auto}
+.figure svg{display:block;width:100%;height:auto;min-width:640px}
+.figure.narrow svg{max-width:620px;margin:0 auto;min-width:420px}
+.figure svg text{font-family:var(--sans);fill:var(--ink)}
+.figure svg .lbl{font-family:var(--serif);font-size:20px;font-weight:700}
+.figure svg .sub{font-family:var(--mono);font-size:12px;fill:var(--muted)}
+.figure svg .tiny{font-family:var(--mono);font-size:11px;fill:var(--faint)}
+.fig-caption{font-size:13px;color:var(--muted);margin:10px 0 0;text-align:center}
+.legend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:4px}
+.legend div{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;color:var(--muted);min-width:0}
+.legend .dot{flex:none;width:24px;height:24px;border-radius:50%;background:var(--blue);color:var(--panel);font-family:var(--mono);font-size:12px;font-weight:800;display:grid;place-items:center}
+.legend b{color:var(--ink);display:block}
+.tools{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.tool{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:16px 14px;text-align:center}
+.tool svg{width:64px;height:64px;display:block;margin:0 auto 10px}
+.tool b{display:block;font-family:var(--serif);font-size:18px}
+.tool p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+.tool .tag{margin-top:10px}
+.howto{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.how{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:16px 18px;min-width:0}
+.how .top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.how .big{font-family:var(--mono);font-size:12px;font-weight:800;color:var(--blue);background:var(--blue-soft);border-radius:7px;padding:4px 8px}
+.how .how-title{margin:0;font-family:var(--serif);font-size:19px}
+.how ol{margin:0;padding-left:20px;color:var(--muted);font-size:14px}
+.how li{margin:0 0 5px}
+.how li b{color:var(--ink)}
+.prompt{position:relative;border:1px solid var(--tag-violet-b);background:var(--violet-soft);border-radius:12px;padding:16px 18px;margin:14px 0}
+.prompt .who{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);font-weight:800;margin-bottom:6px}
+.prompt p{margin:0;font-size:15.5px;color:var(--ink);padding-right:70px}
+.prompt pre{margin:0;font-family:var(--mono);font-size:13px;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere;padding-right:70px}
+.copy{position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:11px;font-weight:700;border:1px solid var(--tag-violet-b);background:var(--panel);color:var(--violet);border-radius:7px;padding:5px 9px;cursor:pointer}
+.copy:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+.prompts-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.prompts-row .prompt{margin:0}
+.prompts-row .prompt p{font-size:14px}
+.ideas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.idea{border:1px dashed var(--line);border-radius:10px;padding:13px;background:var(--panel)}
+.idea b{display:block;font-family:var(--serif);font-size:17px}
+.idea p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+footer{margin-top:60px;border-top:1px solid var(--line);padding-top:18px;color:var(--faint);font-size:12px}
+@media(max-width:980px){
+  .shell{grid-template-columns:1fr}
+  .toc{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .toc nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+  .toc .group{grid-column:1/-1}
+  .meta,.levels,.principles,.mini-grid,.status-strip,.checklist{grid-template-columns:1fr}
+  .swim-row{grid-template-columns:1fr}
+  .swim-row>div{border-left:0;border-top:1px solid var(--line2)}
+  .swim-row>div:first-child{border-top:0}
+  .sample,.surround{grid-template-columns:1fr}
+  .simple-table{display:block;overflow-x:auto}
+  .simple-table th,.simple-table td{min-width:160px}
+  .tools{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .howto,.prompts-row,.legend,.ideas{grid-template-columns:1fr}
+}
+@media print{
+  body{background:#fff}
+  .shell{display:block}
+  .toc{display:none}
+  main{padding:0}
+  .copy{display:none}
+  .section,.swim-row,.sample-card,.db-map,.figure{break-inside:avoid}
+}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+/* Chart additions: include only when the doc contains data charts */
+.chart-card{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:16px;margin:20px 0}
+.chart-card .chart-title{font-family:var(--mono);font-size:12px;font-weight:800;color:var(--ink)}
+.chart-card .chart-sub{font-size:12.5px;color:var(--muted);margin:3px 0 12px}
+.chart-card svg{display:block;width:100%;height:auto}
+.chart-card svg text{font-family:var(--mono);font-size:10px;fill:var(--faint)}
+.chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--muted)}
+.chart-legend .swatch{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+</style>
+</head>
+<body>
+<!-- Shared arrowhead for every figure. Keep this once at the top of <body> when the doc has figures. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" style="fill:var(--faint)"/></marker>
+  </defs>
+</svg>
+<div class="shell">
+  <aside class="toc">
+    <div class="brand">HTML Doc Template</div>
+    <nav>
+      <a href="#overview">Overview</a>
+      <div class="group">Pictures</div>
+      <a href="#g-figure"><span class="tnum">01</span>Figures</a>
+      <a href="#g-tools"><span class="tnum">02</span>Tool cards</a>
+      <div class="group">Steps</div>
+      <a href="#g-flow"><span class="tnum">03</span>Flow cards</a>
+      <a href="#g-howto"><span class="tnum">04</span>How-to cards</a>
+      <a href="#g-prompt"><span class="tnum">05</span>Copy boxes</a>
+      <div class="group">Reference</div>
+      <a href="#g-tables"><span class="tnum">06</span>Tables and callouts</a>
+      <a href="#g-grids"><span class="tnum">07</span>Grids and boxes</a>
+      <a href="#g-swim"><span class="tnum">08</span>Swim rows</a>
+      <a href="#g-data"><span class="tnum">09</span>Data map and records</a>
+      <a href="#g-charts"><span class="tnum">10</span>Charts</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header id="overview">
+      <div class="eyebrow">Style template / component gallery</div>
+      <h1>HTML Doc Style Template</h1>
+      <p class="lead">One instance of every component in the house doc style. Pictures come first, then the specifics: real names, real values, real failure shapes.</p>
+      <div class="meta">
+        <div class="tile"><span class="k">Layout</span><span class="v">Sticky TOC plus numbered sections</span></div>
+        <div class="tile"><span class="k">Type</span><span class="v">Serif headings, sans body, mono labels</span></div>
+        <div class="tile"><span class="k">Palette</span><span class="v">Warm paper, five accents, auto dark mode</span></div>
+      </div>
+      <div class="levels">
+        <div class="level"><span class="tag blue">blue</span><h4>Primary</h4><p>Structural: links, section numbers, brand, the reader ("you") in figures.</p></div>
+        <div class="level"><span class="tag green">green</span><h4>Positive</h4><p>Safe, verified, done, live, free.</p></div>
+        <div class="level"><span class="tag amber">amber</span><h4>Caution</h4><p>Needs attention or a decision. Also the eyebrow color.</p></div>
+      </div>
+      <div class="badge-row" style="margin-top:12px"><span class="tag red">red: danger / failure</span><span class="tag violet">violet: the AI, the model, anything external or special</span></div>
+      <div class="callout">
+        <p><b>How to read this:</b> look at the pictures first. Every section shows one component with placeholder content. Keep class names exactly as written and section numbers two-digit.</p>
+      </div>
+    </header>
+
+    <section class="section" id="g-figure">
+      <div class="section-head"><span class="num">01</span><h2>Figures</h2></div>
+      <p class="sublead">The big picture that explains a section before any sentence does. Hand-drawn inline SVG, built from circles, rects, and paths, colored only with palette variables.</p>
+      <div class="figure">
+        <svg viewBox="0 0 1000 250" role="img" aria-label="Three stops: you ask, the helper builds, the result goes live">
+          <g transform="translate(200,100)">
+            <circle r="64" style="fill:var(--blue-soft);stroke:var(--blue);stroke-width:1.5"/>
+            <circle cx="0" cy="-14" r="14" style="fill:var(--blue)"/>
+            <path d="M-24,30 Q-24,6 0,6 Q24,6 24,30 Z" style="fill:var(--blue)"/>
+          </g>
+          <g transform="translate(500,100)">
+            <circle r="64" style="fill:var(--violet-soft);stroke:var(--violet);stroke-width:1.5"/>
+            <rect x="-30" y="-22" width="60" height="44" rx="6" style="fill:var(--panel);stroke:var(--violet);stroke-width:2"/>
+            <text x="-20" y="6" style="font-family:var(--mono);font-size:16px;font-weight:800;fill:var(--violet)">&gt;_</text>
+            <path d="M22,-42 L26,-32 L36,-28 L26,-24 L22,-14 L18,-24 L8,-28 L18,-32 Z" style="fill:var(--violet)"/>
+          </g>
+          <g transform="translate(800,100)">
+            <circle r="64" style="fill:var(--green-soft);stroke:var(--green);stroke-width:1.5"/>
+            <circle r="28" style="fill:var(--panel);stroke:var(--green);stroke-width:2"/>
+            <ellipse rx="12" ry="28" style="fill:none;stroke:var(--green);stroke-width:2"/>
+            <line x1="-28" y1="0" x2="28" y2="0" style="stroke:var(--green);stroke-width:2"/>
+          </g>
+          <line x1="272" y1="100" x2="428" y2="100" style="stroke:var(--faint);stroke-width:2" marker-end="url(#ah)"/>
+          <line x1="572" y1="100" x2="728" y2="100" style="stroke:var(--faint);stroke-width:2" marker-end="url(#ah)"/>
+          <text class="tiny" x="350" y="88" text-anchor="middle">asks</text>
+          <text class="tiny" x="650" y="88" text-anchor="middle">publishes</text>
+          <text class="lbl" x="200" y="200" text-anchor="middle">You</text>
+          <text class="sub" x="200" y="222" text-anchor="middle">describe it</text>
+          <text class="lbl" x="500" y="200" text-anchor="middle">The helper</text>
+          <text class="sub" x="500" y="222" text-anchor="middle">builds it</text>
+          <text class="lbl" x="800" y="200" text-anchor="middle">The world</text>
+          <text class="sub" x="800" y="222" text-anchor="middle">sees it</text>
+        </svg>
+        <p class="fig-caption">Optional caption: one plain sentence under the picture.</p>
+      </div>
+      <p class="sublead">Numbered markers on a picture pair with a legend underneath. Use the <code>narrow</code> variant for loops and small diagrams.</p>
+      <div class="figure narrow">
+        <svg viewBox="0 0 600 300" role="img" aria-label="A loop of three steps with numbered markers">
+          <path d="M392,70 Q470,80 470,150" style="fill:none;stroke:var(--faint);stroke-width:2.5" marker-end="url(#ah)"/>
+          <path d="M420,234 L190,234" style="fill:none;stroke:var(--faint);stroke-width:2.5" marker-end="url(#ah)"/>
+          <path d="M130,150 Q130,80 208,70" style="fill:none;stroke:var(--faint);stroke-width:2.5" marker-end="url(#ah)"/>
+          <rect x="210" y="40" width="180" height="58" rx="12" style="fill:var(--blue-soft);stroke:var(--blue);stroke-width:1.5"/>
+          <text x="300" y="76" text-anchor="middle" class="lbl" style="font-size:19px">Ask</text>
+          <rect x="400" y="160" width="160" height="58" rx="12" style="fill:var(--violet-soft);stroke:var(--violet);stroke-width:1.5"/>
+          <text x="480" y="196" text-anchor="middle" class="lbl" style="font-size:19px">Build</text>
+          <rect x="40" y="160" width="180" height="58" rx="12" style="fill:var(--green-soft);stroke:var(--green);stroke-width:1.5"/>
+          <text x="130" y="196" text-anchor="middle" class="lbl" style="font-size:19px">Look</text>
+          <g style="font-family:var(--mono);font-size:14px;font-weight:800">
+            <circle cx="210" cy="40" r="15" style="fill:var(--blue)"/><text x="210" y="45" text-anchor="middle" style="fill:var(--panel)">1</text>
+            <circle cx="560" cy="160" r="15" style="fill:var(--blue)"/><text x="560" y="165" text-anchor="middle" style="fill:var(--panel)">2</text>
+            <circle cx="40" cy="160" r="15" style="fill:var(--blue)"/><text x="40" y="165" text-anchor="middle" style="fill:var(--panel)">3</text>
+          </g>
+        </svg>
+      </div>
+      <div class="legend">
+        <div><span class="dot">1</span><span><b>Ask</b>What the numbered marker points at.</span></div>
+        <div><span class="dot">2</span><span><b>Build</b>One short line of explanation.</span></div>
+        <div><span class="dot">3</span><span><b>Look</b>Four across on desktop, one on mobile.</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="g-tools">
+      <div class="section-head"><span class="num">02</span><h2>Tool cards</h2></div>
+      <p class="sublead">One card per tool, app, or ingredient: a 64px icon drawn in SVG, a serif name, one line, and a tag. Five across on desktop.</p>
+      <div class="tools">
+        <div class="tool">
+          <svg viewBox="-40 -40 80 80" aria-hidden="true"><rect x="-32" y="-26" width="64" height="52" rx="7" style="fill:var(--blue-soft);stroke:var(--blue);stroke-width:2.5"/><line x1="-32" y1="-14" x2="32" y2="-14" style="stroke:var(--blue);stroke-width:2.5"/><line x1="-12" y1="-14" x2="-12" y2="26" style="stroke:var(--blue);stroke-width:2"/></svg>
+          <b>Editor</b><p>Where the files live and get opened.</p><span class="tag blue">free app</span>
+        </div>
+        <div class="tool">
+          <svg viewBox="-40 -40 80 80" aria-hidden="true"><rect x="-30" y="-22" width="60" height="44" rx="6" style="fill:var(--violet-soft);stroke:var(--violet);stroke-width:2.5"/><text x="-20" y="6" style="font-family:var(--mono);font-size:16px;font-weight:800;fill:var(--violet)">&gt;_</text><path d="M22,-38 L25,-30 L33,-27 L25,-24 L22,-16 L19,-24 L11,-27 L19,-30 Z" style="fill:var(--violet)"/></svg>
+          <b>AI helper</b><p>Does the work you describe.</p><span class="tag violet">paid plan</span>
+        </div>
+        <div class="tool">
+          <svg viewBox="-40 -40 80 80" aria-hidden="true"><rect x="-28" y="-26" width="56" height="52" rx="7" style="fill:var(--panel2);stroke:var(--ink);stroke-width:2.5"/><circle r="12" style="fill:none;stroke:var(--ink);stroke-width:2.5"/><line x1="0" y1="0" x2="8" y2="-8" style="stroke:var(--ink);stroke-width:2.5;stroke-linecap:round"/></svg>
+          <b>Safe copy</b><p>Keeps every version online.</p><span class="tag blue">free account</span>
+        </div>
+        <div class="tool">
+          <svg viewBox="-40 -40 80 80" aria-hidden="true"><circle r="28" style="fill:var(--green-soft);stroke:var(--green);stroke-width:2.5"/><ellipse rx="12" ry="28" style="fill:none;stroke:var(--green);stroke-width:2"/><line x1="-28" y1="0" x2="28" y2="0" style="stroke:var(--green);stroke-width:2"/></svg>
+          <b>Host</b><p>Puts it on the internet.</p><span class="tag green">free account</span>
+        </div>
+        <div class="tool">
+          <svg viewBox="-40 -40 80 80" aria-hidden="true"><path d="M-12,8 L-12,-4 Q-12,-16 0,-16 Q12,-16 12,-4 L12,8 L16,12 L-16,12 Z" style="fill:var(--amber-soft);stroke:var(--amber);stroke-width:2.5;stroke-linejoin:round"/><circle cx="0" cy="18" r="4" style="fill:var(--amber)"/></svg>
+          <b>Alerts</b><p>Pings you when it needs you.</p><span class="tag amber">optional</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="g-flow">
+      <div class="section-head"><span class="num">03</span><h2>Flow cards</h2></div>
+      <p class="sublead">A short left-to-right sequence. Each step gets a number or letter, a serif name, one plain sentence, and optional badges.</p>
+      <div class="flow">
+        <div class="step-card"><div class="n">01</div><div class="name">First</div><p class="desc">What this step does, in one plain sentence.</p><div class="badge-row"><span class="badge code">free</span></div></div>
+        <div class="step-card"><div class="n">02</div><div class="name">Second</div><p class="desc">Green badge for safe or free, violet for the AI, amber for conditional.</p><div class="badge-row"><span class="badge llm">AI works</span></div></div>
+        <div class="step-card"><div class="n">03</div><div class="name">Third</div><p class="desc">Keep descriptions under two lines so cards stay even.</p><div class="badge-row"><span class="badge maybe">if asked</span><span class="badge">neutral</span></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="g-howto">
+      <div class="section-head"><span class="num">04</span><h2>How-to cards</h2></div>
+      <p class="sublead">Click-by-click instructions, two cards across. The blue chip holds a number, a <code>?</code>, or a short phrase like "1st time". Bold every button name the reader will look for.</p>
+      <div class="howto">
+        <div class="how">
+          <div class="top"><span class="big">1</span><h3 class="how-title">Do the first thing</h3></div>
+          <ol>
+            <li>Go to the page and click <b>Download</b>.</li>
+            <li><b>Mac:</b> drag it into Applications. <b>Windows:</b> run the installer.</li>
+            <li>Open it once so you know it works.</li>
+          </ol>
+        </div>
+        <div class="how">
+          <div class="top"><span class="big">every time after</span><h3 class="how-title">Do the repeat thing</h3></div>
+          <ol>
+            <li>Tell the helper: <b>"Save my changes with a short note."</b></li>
+            <li>Or use the buttons: type a note, click <b>Commit</b>, then <b>Sync</b>.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="g-prompt">
+      <div class="section-head"><span class="num">05</span><h2>Copy boxes</h2></div>
+      <p class="sublead">Anything the reader should paste: a message to an AI, a terminal command, a config block. Violet box, mono label, working Copy button. Use <code>p</code> for prose and <code>pre</code> for commands or multi-line text.</p>
+      <div class="prompt">
+        <div class="who">Your first message</div>
+        <p>Build me a simple one-page website in this folder. When you're done, explain in plain English what each file does.</p>
+        <button class="copy" type="button">Copy</button>
+      </div>
+      <div class="mini-grid">
+        <div class="prompt"><div class="who">Mac terminal</div><pre>echo "a command goes here"</pre><button class="copy" type="button">Copy</button></div>
+        <div class="prompt"><div class="who">Windows PowerShell</div><pre>Write-Output "a command goes here"</pre><button class="copy" type="button">Copy</button></div>
+      </div>
+      <div class="prompts-row">
+        <div class="prompt"><div class="who">Try saying</div><p>Make the title bigger.</p><button class="copy" type="button">Copy</button></div>
+        <div class="prompt"><div class="who">Try saying</div><p>Add a contact section.</p><button class="copy" type="button">Copy</button></div>
+        <div class="prompt"><div class="who">Try saying</div><p>Check it on a phone and fix it.</p><button class="copy" type="button">Copy</button></div>
+      </div>
+    </section>
+
+    <section class="section" id="g-tables">
+      <div class="section-head"><span class="num">06</span><h2>Tables and callouts</h2></div>
+      <p class="sublead">The simple table for dense comparisons and glossaries ("Words you will hear"). The first column is automatically bold. Callouts carry one emphasized point each; pick the border color by meaning.</p>
+      <table class="simple-table">
+        <thead><tr><th>Word</th><th>What it means</th><th>When you'd meet it</th></tr></thead>
+        <tbody>
+          <tr><td>Row label</td><td>One plain sentence.</td><td>Use <code>code</code> for anything typed.</td></tr>
+          <tr><td>Another row</td><td>Cells can hold lists:<ul><li>first point</li><li>second point</li></ul></td><td>Short and concrete.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><p><b>Blue callout (default):</b> guidance, context, what a term means.</p></div>
+      <div class="callout green"><p><b>Green callout:</b> reassurance, a success sign, "that's the full cycle".</p></div>
+      <div class="callout amber"><p><b>Amber callout:</b> this will look scary but is normal, or a caveat.</p></div>
+      <div class="callout red"><p><b>Red callout:</b> a real danger, such as secrets in public files.</p></div>
+      <div class="mini-grid">
+        <div class="callout amber"><p><b>Mini-grid left:</b> pair two contrasting callouts side by side.</p></div>
+        <div class="callout green"><p><b>Mini-grid right:</b> for example "it will ask" next to "how to check it worked".</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="g-grids">
+      <div class="section-head"><span class="num">07</span><h2>Grids and boxes</h2></div>
+      <p class="sublead">Principles for habits and core ideas (four across), ideas for "what next" suggestions (dashed, four across), status boxes for enums or axes (three across), checklist for "you made it when" or do/don't pairs (two across).</p>
+      <div class="principles">
+        <div class="principle"><b>Principle name</b><p>One sentence that earns its place.</p></div>
+        <div class="principle"><b>Another principle</b><p>A bold line plus one sentence.</p></div>
+        <div class="principle"><b>Third</b><p>Four per row on desktop.</p></div>
+        <div class="principle"><b>Fourth</b><p>One column on mobile.</p></div>
+      </div>
+      <div class="ideas" style="margin-top:12px">
+        <div class="idea"><b>Idea one</b><p>A next thing to try.</p></div>
+        <div class="idea"><b>Idea two</b><p>Dashed border means optional.</p></div>
+        <div class="idea"><b>Idea three</b><p>One short line each.</p></div>
+        <div class="idea"><b>Idea four</b><p>Four across.</p></div>
+      </div>
+      <div class="status-strip">
+        <div class="status-box"><div class="title">status_axis_one</div><p>Values as <code>code</code>: <code>received</code>, <code>parsed</code>, <code>done</code>.</p></div>
+        <div class="status-box"><div class="title">status_axis_two</div><p>Each box is one axis; never collapse axes.</p></div>
+        <div class="status-box"><div class="title">status_axis_three</div><p>Mono bold title, muted body.</p></div>
+      </div>
+      <div class="checklist" style="margin-top:12px">
+        <div class="check"><b>You can see it working</b><p>A success condition the reader can check alone.</p></div>
+        <div class="check"><b>Check two</b><p>Two per row, one column on mobile.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="g-swim">
+      <div class="section-head"><span class="num">08</span><h2>Swim rows</h2></div>
+      <p class="sublead">Technical deep dives only: one row per step with owner, files, tables, and output. The gotcha line sits under a divider.</p>
+      <div class="swim">
+        <div class="swim-row">
+          <div><div class="step-title">Step Name</div><div class="small">One-line summary of the step.</div></div>
+          <div><span class="label">Code</span><div class="file-list"><a href="#">module/file.py</a><a href="#">module/other.py</a></div><div class="gotcha">The gotcha: the detail that matters when debugging.</div></div>
+          <div><span class="label">Tables</span><div class="table-list"><span>table_one</span><span>table_two</span></div></div>
+          <div><span class="label">Output</span>What durable artifact this step leaves behind.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="g-data">
+      <div class="section-head"><span class="num">09</span><h2>Data map and records</h2></div>
+      <p class="sublead">Technical docs only. A spine of boxes joined by ASCII arrows, supporting boxes below, and sample cards with synthetic records as key-value pairs.</p>
+      <div class="db-map">
+        <div class="db-spine">
+          <div class="db-box core"><div class="t">core_entity</div><div class="d">Blue tint marks the core chain.</div></div>
+          <div class="arrow">-&gt;</div>
+          <div class="db-box evidence"><div class="t">evidence_entity</div><div class="d">Green tint for evidence or derived data.</div></div>
+          <div class="arrow">-&gt;</div>
+          <div class="db-box ops"><div class="t">ops_entity</div><div class="d">Amber tint for operational tables.</div></div>
+        </div>
+        <div class="surround">
+          <div class="db-box"><div class="t">support_a</div><div class="d">Neutral boxes for supporting entities.</div></div>
+          <div class="db-box"><div class="t">support_b</div><div class="d">Four per row on desktop.</div></div>
+        </div>
+      </div>
+      <div class="sample">
+        <div class="sample-card"><div class="table-name">entity_name</div><div class="kv"><span class="key">id</span><span class="val">demo_001</span><span class="key">status</span><span class="val">active</span><span class="key">score</span><span class="val">85</span></div></div>
+        <div class="sample-card"><div class="table-name">other_entity</div><div class="kv"><span class="key">id</span><span class="val">demo_002</span><span class="key">parent_id</span><span class="val">demo_001</span><span class="key">note</span><span class="val">Synthetic values only, never real data.</span></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="g-charts">
+      <div class="section-head"><span class="num">10</span><h2>Charts</h2></div>
+      <p class="sublead">Data charts only when asked. Inline SVG inside a chart card, colored with palette variables so dark mode follows. No chart libraries, ever.</p>
+      <div class="chart-card">
+        <div class="chart-title">quarterly_volume</div>
+        <p class="chart-sub">Items processed per quarter. Synthetic data.</p>
+        <svg viewBox="0 0 560 210" role="img" aria-label="Bar chart, items per quarter">
+          <line x1="40" y1="30" x2="540" y2="30" style="stroke:var(--line2)"/>
+          <line x1="40" y1="100" x2="540" y2="100" style="stroke:var(--line2)"/>
+          <line x1="40" y1="170" x2="540" y2="170" style="stroke:var(--line)"/>
+          <text x="34" y="33" text-anchor="end">40</text>
+          <text x="34" y="103" text-anchor="end">20</text>
+          <text x="34" y="173" text-anchor="end">0</text>
+          <rect x="70" y="86" width="70" height="84" rx="4" style="fill:var(--blue)"/>
+          <rect x="190" y="58" width="70" height="112" rx="4" style="fill:var(--blue)"/>
+          <rect x="310" y="93" width="70" height="77" rx="4" style="fill:var(--blue)"/>
+          <rect x="430" y="37" width="70" height="133" rx="4" style="fill:var(--green)"/>
+          <text x="105" y="188" text-anchor="middle">Q1</text>
+          <text x="225" y="188" text-anchor="middle">Q2</text>
+          <text x="345" y="188" text-anchor="middle">Q3</text>
+          <text x="465" y="188" text-anchor="middle">Q4</text>
+        </svg>
+        <div class="chart-legend">
+          <span><span class="swatch" style="background:var(--blue)"></span>Actual</span>
+          <span><span class="swatch" style="background:var(--green)"></span>Projected</span>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Footer: who this was written for, source notes, and what to do if something has changed since.
+    </footer>
+  </main>
+</div>
+<!-- Copy-button script. Keep it whenever the doc has a .copy button; drop it otherwise. -->
+<script>
+document.querySelectorAll('.copy').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var box = btn.parentElement.querySelector('pre, p');
+    var text = box ? box.innerText.trim() : '';
+    function done(){ btn.textContent = 'Copied'; setTimeout(function(){ btn.textContent = 'Copy'; }, 1500); }
+    try {
+      navigator.clipboard.writeText(text).then(done, function(){ selectText(box); });
+    } catch (e) { selectText(box); }
+  });
+});
+function selectText(el){
+  if (!el) return;
+  var r = document.createRange(); r.selectNodeContents(el);
+  var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "description": "The build plugin's stop guard: keeps an open /build:build running until a permitted stop or the final report.",
+  "hooks": {
+    "UserPromptSubmit": [
+      { "hooks": [ { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/stop-guard.py\"", "timeout": 10 } ] }
+    ],
+    "Stop": [
+      { "hooks": [ { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/stop-guard.py\"", "timeout": 20 } ] }
+    ]
+  }
+}
